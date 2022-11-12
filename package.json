@@ -1,0 +1,11 @@
+{
+  "name": "fdate",
+  "version": "1.0.0",
+  "description": "Package for simple date",
+  "main": "index.js",
+  "scripts": {
+    "test": "show"
+  },
+  "author": "Farid Hammani",
+  "license": "ISC"
+}
