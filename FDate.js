@@ -152,7 +152,7 @@ module.exports = class FDate {
         }
 
         if (result.includes("D")) {
-            result = result.replace("D", days[usedClass.day]);
+            result = result.replace("D", days[usedClass._day]);
         }
 
         if (result.includes("H")) {
