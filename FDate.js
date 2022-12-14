@@ -24,10 +24,10 @@ var days = {
 module.exports = class FDate {
     constructor(dt = null) {
         if (dt != null && dt != "" && dt != undefined) {
-            if (typeof dt == "string") {
+            if (typeof dt == "string" || typeof dt == "number") {
                 this.date = new Date(dt);
             } else {
-                console.error("Parametre must be type of string!");
+                console.error("Parametre must be type of string or number!");
                 return;
             }
         }
@@ -115,6 +115,48 @@ module.exports = class FDate {
         return `${this.year}-${this.month}-${this.day} ${this.hour}:${this.minute}:${this.second}`;
     }
 
+    diffForHumain() {
+        let now = new FDate(), diff = new FDate(now.timeNumber - this.timeNumber),
+            diffData = {
+                hours: diff.hour,
+                minutes: diff.minute,
+                seconds: diff.second,
+                days: diff.day - 1,
+                months: diff.month - 1,
+                years: diff.year - 1970,
+            }
+
+        return this.#toReadable({
+            hours: (diffData.hours < 0 ? diffData.hours : -(diffData.hours)),
+            minutes: (diffData.minutes < 0 ? diffData.minutes : -(diffData.minutes)),
+            seconds: (diffData.seconds < 0 ? diffData.seconds : -(diffData.seconds)),
+            days: (diffData.days < 0 ? diffData.days : -(diffData.days)),
+            months: (diffData.months < 0 ? diffData.months : -(diffData.months)),
+            years: (diffData.years < 0 ? diffData.years : -(diffData.years)),
+        })
+    }
+
+    diffForHumainStructure() {
+        let now = new FDate(), diff = new FDate(now.timeNumber - this.timeNumber),
+            diffData = {
+                hours: diff.hour,
+                minutes: diff.minute,
+                seconds: diff.second,
+                days: diff.day - 1,
+                months: diff.month - 1,
+                years: diff.year - 1970,
+            }
+
+        return {
+            hours: diffData.hours,
+            minutes: diffData.minutes,
+            seconds: diffData.seconds,
+            days: diffData.days,
+            months: diffData.months,
+            years: diffData.years,
+        };
+    }
+
     #_new_date() {
         this.hour = this.date.getHours();
         this.minute = this.date.getMinutes();
@@ -130,6 +172,22 @@ module.exports = class FDate {
 
     #_format(form, usedClass) {
         let result = form;
+
+        if (result.includes("H")) {
+            result = result.replace("H", usedClass.hour);
+        }
+
+        if (result.includes("i")) {
+            result = result.replace("i", usedClass.minute);
+        }
+
+        if (result.includes("s")) {
+            result = result.replace("s", usedClass.second);
+        }
+
+        if (result.includes("l")) {
+            result = result.replace("l", usedClass.millisecond);
+        }
 
         if (result.includes("y")) {
             result = result.replace("y", usedClass.year.toString().substring(2));
@@ -153,22 +211,6 @@ module.exports = class FDate {
 
         if (result.includes("D")) {
             result = result.replace("D", days[usedClass._day]);
-        }
-
-        if (result.includes("H")) {
-            result = result.replace("H", usedClass.hour);
-        }
-
-        if (result.includes("i")) {
-            result = result.replace("i", usedClass.minute);
-        }
-
-        if (result.includes("s")) {
-            result = result.replace("s", usedClass.second);
-        }
-
-        if (result.includes("l")) {
-            result = result.replace("l", usedClass.millisecond);
         }
 
         return result;
@@ -262,5 +304,70 @@ module.exports = class FDate {
     static format(form = "Y-m-d") {
         let date = new FDate();
         return date.#_format(form, date);
+    }
+
+    static diffForHumain(oldDate) {
+        let old = new Date(oldDate), now = new Date(), diff = new Date(now.getTime() - old.getTime()),
+            diffData = {
+                hours: diff.getHours(),
+                minutes: diff.getMinutes(),
+                seconds: diff.getSeconds(),
+                days: diff.getUTCDate() - 1,
+                months: diff.getUTCMonth(),
+                years: diff.getFullYear() - 1970,
+            }
+
+        return FDate.#toReadableS({
+            hours: (diffData.hours < 0 ? diffData.hours : -(diffData.hours)),
+            minutes: (diffData.minutes < 0 ? diffData.minutes : -(diffData.minutes)),
+            seconds: (diffData.seconds < 0 ? diffData.seconds : -(diffData.seconds)),
+            days: (diffData.days < 0 ? diffData.days : -(diffData.days)),
+            months: (diffData.months < 0 ? diffData.months : -(diffData.months)),
+            years: (diffData.years < 0 ? diffData.years : -(diffData.years)),
+        })
+        // return old.#toReadable({ days: -0, hours: -15, minutes: -38, months: -0, seconds: -46.389, years: -0 });
+    }
+
+    static diffForHumainStructure(oldDate) {
+        let old = new Date(oldDate), now = new Date(), diff = new Date(now.getTime() - old.getTime()),
+            diffData = {
+                hours: diff.getHours(),
+                minutes: diff.getMinutes(),
+                seconds: diff.getSeconds(),
+                days: diff.getUTCDate() - 1,
+                months: diff.getUTCMonth(),
+                years: diff.getFullYear() - 1970,
+            }
+
+        return {
+            hours: diffData.hours,
+            minutes: diffData.minutes,
+            seconds: diffData.seconds,
+            days: diffData.days,
+            months: diffData.months,
+            years: diffData.years,
+        }
+    }
+
+    #toReadable(obj) {
+        var names = {
+            days: "d", hours: 'h', minutes: 'min', months: 'm', seconds: 's', years: 'y'
+        }
+
+        return Object.keys(obj).reduce((acc, v) => {
+            if (obj[v] != 0) acc.push(Math.abs(Math.ceil(obj[v])) + names[v]);
+            return acc;
+        }, []).join(' ');
+    }
+
+    static #toReadableS(obj) {
+        var names = {
+            days: "d", hours: 'h', minutes: 'min', months: 'm', seconds: 's', years: 'y'
+        }
+
+        return Object.keys(obj).reduce((acc, v) => {
+            if (obj[v] != 0) acc.push(Math.abs(Math.ceil(obj[v])) + names[v]);
+            return acc;
+        }, []).join(' ');
     }
 }
