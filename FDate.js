@@ -115,8 +115,8 @@ module.exports = class FDate {
         return `${this.year}-${this.month}-${this.day} ${this.hour}:${this.minute}:${this.second}`;
     }
 
-    diffForHumain() {
-        let now = new FDate(), diff = new FDate(now.timeNumber - this.timeNumber),
+    diffForHumain(newDate = null) {
+        let now = (newDate == null ? new FDate() : new FDate(newDate)), diff = new FDate(now.timeNumber - this.timeNumber),
             diffData = {
                 hours: diff.hour,
                 minutes: diff.minute,
@@ -136,8 +136,8 @@ module.exports = class FDate {
         })
     }
 
-    diffForHumainStructure() {
-        let now = new FDate(), diff = new FDate(now.timeNumber - this.timeNumber),
+    diffForHumainStructure(newDate = null) {
+        let now = (newDate == null ? new FDate() : new FDate(newDate)), diff = new FDate(now.timeNumber - this.timeNumber),
             diffData = {
                 hours: diff.hour,
                 minutes: diff.minute,
@@ -306,8 +306,8 @@ module.exports = class FDate {
         return date.#_format(form, date);
     }
 
-    static diffForHumain(oldDate) {
-        let old = new Date(oldDate), now = new Date(), diff = new Date(now.getTime() - old.getTime()),
+    static diffForHumain(oldDate, newDate = null) {
+        let old = new Date(oldDate), now = (newDate == null ? new Date() : new Date(newDate)), diff = new Date(now.getTime() - old.getTime()),
             diffData = {
                 hours: diff.getHours(),
                 minutes: diff.getMinutes(),
@@ -328,8 +328,8 @@ module.exports = class FDate {
         // return old.#toReadable({ days: -0, hours: -15, minutes: -38, months: -0, seconds: -46.389, years: -0 });
     }
 
-    static diffForHumainStructure(oldDate) {
-        let old = new Date(oldDate), now = new Date(), diff = new Date(now.getTime() - old.getTime()),
+    static diffForHumainStructure(oldDate, newDate = null) {
+        let old = new Date(oldDate), now = (newDate == null ? new Date() : new Date(newDate)), diff = new Date(now.getTime() - old.getTime()),
             diffData = {
                 hours: diff.getHours(),
                 minutes: diff.getMinutes(),
