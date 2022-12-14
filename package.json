@@ -1,6 +1,6 @@
 {
   "name": "farid-fdate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Package for simple date",
   "main": "index.js",
   "scripts": {
